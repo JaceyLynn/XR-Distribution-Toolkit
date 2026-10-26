@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>XR Distribution Toolkit Prototype</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -621,6 +625,7 @@ footer{font-size:.85rem;color:var(--muted);display:grid;gap:6px}
 .stepper .st:not([aria-current]):not(.st-lock):hover .st-c{border-color:var(--ink)}
 .stepper .st.st-lock{cursor:not-allowed}
 .stepper .st:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pen-i{display:block}.pl-pen,.pl-nobox{display:inline-grid;place-items:center}
 </style>
 <div class="app">
 <header class="app-top">
@@ -1174,8 +1179,9 @@ if (jEl) {
   const vById=id=>V.find(z=>z.id===id)||S.find(z=>z.id===id);
   const vcard=x=>`<article class="pl-vc"><div class="pl-vc-top"><b class="pl-vc-name">${esc(x.name)}</b>${starBtn(vById(x.id))}</div><span class="pl-vc-sub">${esc(x.sub)}</span><span class="pl-how"><small>Contact</small>${contactHtml(x.v)}</span>${x.web?`<a href="${esc(x.web)}" target="_blank" rel="noopener">${esc(host(x.web))} ↗</a>`:''}</article>`;
   const vrow=x=>`<li class="pl-vr${x.on?' on':''}">${starBtn(vById(x.id))}<span class="pl-vr-n"><b>${esc(x.name)}</b><small>${esc(x.sub)}</small></span><span class="pl-vr-how">${contactHtml(x.v)}</span>${x.web?`<a href="${esc(x.web)}" target="_blank" rel="noopener">${esc(host(x.web))} ↗</a>`:'<span></span>'}</li>`;
-  const tickRow=x=>{ const on=!x.plain&&j.tick.has(x.id); return `<li class="pl-todo${on?' done':''}${x.plain?' plain':''}">${x.plain?'<span class="pl-nobox" aria-hidden="true">✎</span>':`<button class="pl-box" role="checkbox" aria-checked="${on}" data-sk="j-tick" data-id="${esc(x.id)}" aria-label="${esc(x.text)}">${on?'✓':''}</button>`}<span class="pl-todo-t"><span>${esc(x.text)}</span>${(x.lines||[]).map(l=>`<small${l.startsWith('Your note')?' class="pl-note"':''}>${esc(l)}</small>`).join('')}</span>${x.s!=null?`<button class="pl-pen" data-sk="j-edit" data-s="${x.s}" data-i="${x.i}" aria-label="Go to the question: ${esc(x.text)}" title="Go to the question">✎</button>`:'<span></span>'}</li>`; };
-  const factHtml=f=>`<div class="pl-fact"><small>${f.label}<button class="pl-pen" data-sk="j-edit" data-s="${f.s}" data-i="${f.i}" aria-label="Change ${esc(f.label)}" title="Change">✎</button></small><b class="${f.empty?'none':''}">${esc(f.value)}</b>${f.tag?`<span class="pl-tag ${f.tag}">${DTAG[f.tag]}</span>`:''}</div>`;
+  const PEN='<svg class="pen-i" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.5l2.5 2.5L5.5 13 2.5 13.5 3 10.5z"/><path d="M9.5 4l2.5 2.5"/></svg>';
+  const tickRow=x=>{ const on=!x.plain&&j.tick.has(x.id); return `<li class="pl-todo${on?' done':''}${x.plain?' plain':''}">${x.plain?`<span class="pl-nobox" aria-hidden="true">${PEN}</span>`:`<button class="pl-box" role="checkbox" aria-checked="${on}" data-sk="j-tick" data-id="${esc(x.id)}" aria-label="${esc(x.text)}">${on?'✓':''}</button>`}<span class="pl-todo-t"><span>${esc(x.text)}</span>${(x.lines||[]).map(l=>`<small${l.startsWith('Your note')?' class="pl-note"':''}>${esc(l)}</small>`).join('')}</span>${x.s!=null?`<button class="pl-pen" data-sk="j-edit" data-s="${x.s}" data-i="${x.i}" aria-label="Go to the question: ${esc(x.text)}" title="Go to the question">${PEN}</button>`:'<span></span>'}</li>`; };
+  const factHtml=f=>`<div class="pl-fact"><small>${f.label}<button class="pl-pen" data-sk="j-edit" data-s="${f.s}" data-i="${f.i}" aria-label="Change ${esc(f.label)}" title="Change">${PEN}</button></small><b class="${f.empty?'none':''}">${esc(f.value)}</b>${f.tag?`<span class="pl-tag ${f.tag}">${DTAG[f.tag]}</span>`:''}</div>`;
   function sectionHtml(sec,collapsible){
     const all=sec.groups.flatMap(g=>g.items).filter(x=>!x.plain), nDone=all.filter(x=>j.tick.has(x.id)).length;
     const tg=g=>`<div class="pl-tg pl-tg-${g.k}"><h4>${g.h}<span>${g.items.length}</span></h4><small class="pl-tg-note">${g.note}</small>${g.items.length?`<ul>${g.items.map(tickRow).join('')}</ul>`:`<p class="pl-empty">${g.empty}${g.add?` <button class="pl-edit" data-sk="j-edit" data-s="${g.add.s}" data-i="${g.add.i}">${g.add.l}</button>`:''}</p>`}</div>`, acts=sec.groups.filter(g=>g.k!=='decide'), refl=sec.groups.find(g=>g.k==='decide');
@@ -1259,7 +1265,7 @@ if (jEl) {
     } else {
       const s=STAGES[j.stage], qi=j.qi[j.stage], back=j.stage===2&&j.skipped?0:j.stage-1;
       left=`<div><span class="eyebrow">${s.label}${j.stage===1?' · optional':''}</span><span style="font-size:.72rem;color:var(--muted);font-style:italic">${esc(s.ask)}</span>${j.example?`<span class="sk-ex">Filled in with an example project. <button data-sk="j-blank">Start blank</button></span>`:''}<button class="chip k-ui" style="font-size:.72rem;${j.intro?'border-color:var(--ink)':'color:var(--muted)'}" data-sk="j-intro">About this section</button>${s.qs.map((x,i)=>`<button class="chip k-ui" style="font-size:.72rem;${i===qi&&!j.fork&&!j.intro?'border-color:var(--ink)':done(x)?'':'color:var(--muted)'}" data-sk="j-q" data-i="${i}"><i class="sk-dot" style="background:${PURP[pk(x)][0]}" aria-hidden="true"></i>${done(x)?'✓ ':j.skipQ[x.id]?'– ':''}${esc(x.short)}</button>`).join('')}
-        ${s.skippable?`<button class="sk-navl" data-sk="j-skip">${j.skipped?'Use this phase again':'Skip Festival Circuit'}</button>`:''}</div>`;
+        ${s.skippable&&j.skipped?'<button class="sk-navl" data-sk="j-skip">Use this phase again</button>':''}</div>`;
       if(j.intro){
         const t=INTRO[j.stage];
         mid=`<div style="background:var(--bg)"><div class="sk-intro"><span class="eyebrow">${esc(s.label)}${t.tag?' · '+t.tag.toLowerCase():''}</span><h3>${esc(s.ask)}</h3><p>${esc(t.lede)}</p>
