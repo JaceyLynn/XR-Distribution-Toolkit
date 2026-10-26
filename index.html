@@ -614,6 +614,13 @@ footer{font-size:.85rem;color:var(--muted);display:grid;gap:6px}
 .sketch.live-sk .pw-x{margin-left:6px;padding:0 2px;font-size:.85rem;line-height:1;color:inherit;opacity:.7}
 .sketch.live-sk .pw-x:hover,.sketch.live-sk .pw-x:focus-visible{opacity:1}
 .pl-how a,.pl-vr-how a{color:inherit;text-decoration:none;overflow-wrap:anywhere}.pl-how a:hover,.pl-vr-how a:hover{text-decoration:underline}
+/* Steps bar: section titles are the way back, so they react on hover */
+.stepper .st{border-radius:6px;transition:background .15s}
+.stepper .st:not([aria-current]):not(.st-lock):hover{background:color-mix(in srgb,var(--ink) 7%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 7%,transparent)}
+.stepper .st:not([aria-current]):not(.st-lock):hover .st-l b{color:var(--ink)!important;text-decoration:underline;text-underline-offset:3px}
+.stepper .st:not([aria-current]):not(.st-lock):hover .st-c{border-color:var(--ink)}
+.stepper .st.st-lock{cursor:not-allowed}
+.stepper .st:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 <div class="app">
 <header class="app-top">
@@ -1239,7 +1246,7 @@ if (jEl) {
     try{ draw(); } finally { j.changed=null; } }
   function draw(){
     const stc=(cur,sk,ok,lock)=>cur?'background:var(--ink);color:var(--bg);border-color:var(--ink)':sk?'background:var(--surface);color:var(--muted);border-style:dashed':ok?'background:var(--format);color:#fff;border-color:var(--format)':lock?'background:var(--surface);color:var(--muted);border-style:dotted':'background:var(--surface);color:var(--muted)';
-    const stB=(i,n,label,sub,style,cur,lock)=>`<button class="st${lock?' st-lock':''}" data-sk="j-stage" data-i="${i}"${cur?' aria-current="step"':''}><span class="st-c" style="${style}">${n}</span><span class="st-l"><b style="font-weight:${cur?700:400};color:${cur?'var(--ink)':'var(--muted)'}">${label}</b><span>${sub}</span></span></button>`;
+    const stB=(i,n,label,sub,style,cur,lock)=>`<button class="st${lock?' st-lock':''}" data-sk="j-stage" data-i="${i}"${cur?' aria-current="step"':` title="${lock?'Opens once Research & Development is done':'Go to '+label}"`}><span class="st-c" style="${style}">${n}</span><span class="st-l"><b style="font-weight:${cur?700:400};color:${cur?'var(--ink)':'var(--muted)'}">${label}</b><span>${sub}</span></span></button>`;
     const ok0=devOK();
     const steps=STAGES.map((s,i)=>{ const cur=j.stage===i, lock=i>0&&!ok0, sk=i===1&&j.skipped, ok=s.qs.every(fin)&&s.qs.some(done);
         const sub=cur?'Current':lock?(i===1?'Optional · after R&D':'After R&D'):sk?'Skipped · reopen':ok?'Done':i===1&&!s.qs.some(done)?'Optional':`${s.qs.filter(done).length} of ${s.qs.length}`;
@@ -1252,8 +1259,7 @@ if (jEl) {
     } else {
       const s=STAGES[j.stage], qi=j.qi[j.stage], back=j.stage===2&&j.skipped?0:j.stage-1;
       left=`<div><span class="eyebrow">${s.label}${j.stage===1?' · optional':''}</span><span style="font-size:.72rem;color:var(--muted);font-style:italic">${esc(s.ask)}</span>${j.example?`<span class="sk-ex">Filled in with an example project. <button data-sk="j-blank">Start blank</button></span>`:''}<button class="chip k-ui" style="font-size:.72rem;${j.intro?'border-color:var(--ink)':'color:var(--muted)'}" data-sk="j-intro">About this section</button>${s.qs.map((x,i)=>`<button class="chip k-ui" style="font-size:.72rem;${i===qi&&!j.fork&&!j.intro?'border-color:var(--ink)':done(x)?'':'color:var(--muted)'}" data-sk="j-q" data-i="${i}"><i class="sk-dot" style="background:${PURP[pk(x)][0]}" aria-hidden="true"></i>${done(x)?'✓ ':j.skipQ[x.id]?'– ':''}${esc(x.short)}</button>`).join('')}
-        ${s.skippable?`<button class="sk-navl" data-sk="j-skip">${j.skipped?'Use this phase again':'Skip Festival Circuit'}</button>`:''}
-        ${j.stage>0?`<button class="sk-navl" data-sk="j-stage" data-i="${back}">← Back to ${STAGES[back].label}</button>`:''}</div>`;
+        ${s.skippable?`<button class="sk-navl" data-sk="j-skip">${j.skipped?'Use this phase again':'Skip Festival Circuit'}</button>`:''}</div>`;
       if(j.intro){
         const t=INTRO[j.stage];
         mid=`<div style="background:var(--bg)"><div class="sk-intro"><span class="eyebrow">${esc(s.label)}${t.tag?' · '+t.tag.toLowerCase():''}</span><h3>${esc(s.ask)}</h3><p>${esc(t.lede)}</p>
