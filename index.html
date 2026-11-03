@@ -1186,6 +1186,16 @@ body[data-bg="col"]:is([data-jph="pl"],[data-jph="pr"],[data-jph="ci"]) #sk-jour
 body[data-bg="col"]:is([data-jph="pl"],[data-jph="pr"],[data-jph="ci"]) #sk-journey .sk-body .q-next{background:#f8f2e6;color:#1d1a16;border-color:#f8f2e6}
 body[data-bg="col"]:is([data-jph="pl"],[data-jph="pr"],[data-jph="ci"]) #sk-journey .sk-body :is(input,textarea,select,.vc,.card,.pl-card){color:#1d1a16;--ink:#1d1a16;--muted:#5a554d;--line:rgba(30,25,20,.2)}
 body[data-bg="col"][data-jph="plan"] #sk-journey .sk-body{--ink:#1d1a16;--muted:#3b352b;--line:rgba(30,25,20,.25);--ph-pl:#22325c;--ph-pl-tx:#1c2a4f;--ph-pr:#2c4a25;--ph-pr-tx:#243e1f;--ph-ci:#6e2410;--ph-ci-tx:#5e1f0d}
+/* Colored bg: no top bar on the question section (Jacie 2026-11-03) */
+body[data-bg="col"] #sk-journey .sk-body>div.jm{border-top-color:transparent}
+/* Progress: the current phase's ring glows like the landing's hovered ↓ (Jacie 2026-11-03): solid phase colour to 20% then fading to
+   transparent at the ring, with a short halo that hugs the ring (no box shadow, which left a pale gap); the ring keeps showing real progress. Hovering a phase turns its text the phase colour. */
+.sketch.live-sk .sn.cur .sn-ring{border-radius:50%;box-shadow:none;background:radial-gradient(circle closest-side,var(--ph) 0%,var(--ph) 20%,color-mix(in srgb,var(--ph) 45%,transparent) 50%,color-mix(in srgb,var(--ph) 22%,transparent) 78%,transparent 80%);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--ph) 45%,transparent))}
+.sketch.live-sk .sn.cur .sn-tr{fill:none}
+.sketch.live-sk .sn:not(.cur):hover{color:var(--ph-tx,var(--ink))}
+.sketch.live-sk .sn:not(.cur):hover .sn-ring{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--ph) 45%,transparent))}
+.sketch.live-sk .sn-plan:not(.cur):hover{color:var(--ink)}
+.sketch.live-sk .sn-plan:not(.cur):hover span{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:7px}
 /* Bottom rhizome net switched off for now (Jacie 2026-11-03); the code stays so it can come back */
 .rz-net{display:none!important}
 
@@ -1687,18 +1697,18 @@ if (jEl) {
       {id:'host',g:'host',short:'Checklist',text:'What do you need to confirm with each potential host?',kind:'checklist',items:HOSTCK,own:'Add something else to confirm',prompt:'For instance, if the project is designed for a 5x4m play space, and the hoped-for venue only offers 4x4m, then this is a problem.'}]}
   ];
   // An example project, so every screen has something to look at. "Start blank" clears it.
+  // A few questions are left unanswered on purpose (Readiness, Re-versioning, Festival timing, Geographical reach) to show skipping (Jacie 2026-11-03).
   const EXAMPLE={
     p_fmt:{v:['nh'],o:'',n:''}, aud:{v:[],o:'',n:'Adults and families in mid-sized European cities, including people who rarely visit galleries'},
     ess:{order:['social','site','body','own1','guide','contrib','solo','objects'],set:true,n:'',add:{own1:'Talking together afterwards'},cn:1},
     tech:{v:['comp','proj','audio','own1'],o:'',n:'Two projectors and a gaming PC; the host supplies screens',add:{own1:'A dimmable room'},cn:1},
-    ready:{v:['wip'],o:'',n:''}, start:{v:[],o:'',n:'Spring 2027: small sessions for industry feedback at a regional festival first, then larger public runs at local venues'},
+    start:{v:[],o:'',n:'Spring 2027: small sessions for industry feedback at a regional festival first, then larger public runs at local venues'},
     money:{v:['fee','travel'],o:'',n:''}, dur:{v:['m13'],o:'',n:''},
     success:{v:[],o:'',n:'People stay afterwards to talk about their own neighbourhood'},
-    reversion:{v:[],o:'',n:'A smaller version without the set could tour to libraries'},
-    pr_show:{v:['nh'],o:'',n:''}, pr_region:{v:['Europe'],o:'',n:''}, pr_when:{v:['q4'],o:'',n:''},
+    pr_show:{v:['nh'],o:'',n:''}, pr_region:{v:['Europe'],o:'',n:''},
     prep:{v:['desc','tech','own1'],o:'',n:'',add:{own1:'A one-minute trailer'},cn:1},
     disc:{v:['visual'],o:'',n:''}, fmt:{v:['nh'],o:'',n:''}, fdet:{v:['nh-set'],o:'',n:''},
-    vtype:{v:['xr','museum','gallery'],o:'',n:''}, region:{v:['Europe'],o:'',n:''}};
+    vtype:{v:['xr','museum','gallery'],o:'',n:''}};
   const fresh=()=>({stage:-1, qi:[0,0,0], open:null, copied:false, saved:'', more:0, showChk:false, seen:{}, tick:new Set(), hide:new Set(), shut:new Set(), panel:null,
     // Your Plan opens with only Festivals and Venues expanded (Jacie 2026-11-02); Planning's sections are ready open inside it
     secOpen:new Set(['pr','ci','pr:find','ci:find','pl:proj','pl:prio','pl:refl']), ans:{}});
