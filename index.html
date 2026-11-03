@@ -1155,6 +1155,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:214748
   --ph-ci:#c4502a;--ph-ci-bg:#f8e6de;--ph-ci-tx:#a3401f;--ph-ci-deep:#a3401f;--ph-ci-lt:#f2b79f}
 /* Database: the action colour is a deep poppy orange instead of violet (selected links, counts, Start from, Add a filter, start page) */
 #sk-pathway{--accent:#b84a25}
+/* Adding your own item (Jacie 2026-11-03): a round plus button instead of the underlined word "Add" */
+.sketch.live-sk .rk-add{align-items:center}
+.sketch.live-sk .rk-add .sk-mini.rk-plus{display:grid;place-items:center;flex:none;width:34px;height:34px;padding:0;border:1.5px solid var(--glow,var(--ink));border-radius:50%;background:transparent;color:var(--glow,var(--ink));font-size:1.25rem;font-weight:400;line-height:1;text-decoration:none;transition:background-color .2s,color .2s}
+.sketch.live-sk .rk-add .sk-mini.rk-plus:hover{background:var(--glow,var(--ink));color:#fff}
+.sketch.live-sk .rk-add .sk-mini.rk-plus:focus-visible{outline:2px solid var(--glow,var(--ink));outline-offset:3px}
 </style>
 <div class="app">
 <header class="app-top">
@@ -1575,18 +1580,21 @@ if (jEl) {
     space:'Confirm the space: size, layout, light and sound',equip:'Confirm equipment: headsets, computers, screens, power',net:'Confirm connectivity: internet and network access',labour:'Confirm labour: who installs, runs, trains and troubleshoots',money:'Confirm money: fees, freight, travel, insurance'};
   const STAGES=[
     // Planning (Jacie 2026-11-02): grouped like Premiere and Circulation, one question per screen.
-    // Discovery, Preferred duration, and Readiness and timing are removed for now (Jacie 2026-11-02).
+    // Readiness, Timing and level, and Preferred duration are back; Onboarding is removed; Audience is a written answer (Jacie 2026-11-03).
+    // "At what level" means both the audience size and the kind of event (Jacie 2026-11-03).
     {...SEC[0], groups:{proj:'Your project',aud:'Audience and impact',show:'Showing the work'}, qs:[
       {g:'proj',id:'p_fmt',short:'Format',text:'What is the primary format?',kind:'multi',opts:FAM,own:'Add another format',prompt:'What is the mode of interaction for the user/audience? Is it between a single audience member and the work, or do audiences also interact with each other? Is the participant reaching for objects within VR, or are they using their bodies to navigate a space and trigger responses with their presence?',kase:'Ancestors: a phone-based group event'},
-      {g:'proj',id:'welcome',short:'Onboarding',text:'Will there need to be extensive onboarding? Is this part of the project or a separate introduction?',kind:'multi',hint:'Think about how familiar the audience is with the project’s technology.',opts:{self:'Little or none, the work explains itself',inwork:'Onboarding built into the work',separate:'A separate introduction before',guide:'A guide or facilitator throughout',access:'Access support'},own:'Add another kind of onboarding'},
       {g:'proj',id:'tech',short:'Technical needs',text:'What technical equipment or support does your work need to be shown?',kind:'multi',opts:{hmd:'Headsets and controllers',comp:'Computers or playback devices',proj:'Projection or screens',audio:'Audio',net:'Network connection',track:'Tracking or sensors',custom:'Custom hardware or installation',staff:'Technical staff or facilitation'},own:'Add other equipment or support',details:'Details: quantities, models, software, who supplies what (optional)',kase:'AI & Me: install and touring needs'},
-      {g:'aud',id:'aud',short:'Audience',text:'Who is the intended audience? Where are they?',kind:'multi',opts:{adults:'Adults',families:'Families',young:'Young people aged 12–16',students:'Students and researchers',community:'A particular community',industry:'Festival and industry audiences',newxr:'People new to XR'},own:'Add another audience',details:'Where are they? (optional)',detailsLabel:'Where are they? (optional)',detailsShort:'Where',kase:'Kinfolk Tech: partners chosen through community'},
+      {g:'proj',id:'ready',short:'Readiness',text:'How ready is the project?',kind:'choice',opts:{idea:'An idea or pitch',proto:'A prototype',wip:'A work in progress',done:'A finished version'},other:true},
+      {g:'proj',id:'start',short:'Timing and level',text:'When do you want to start distributing/exhibiting, and at what level?',kind:'text',ph:'When: for example, spring 2027. Level: how big an audience (small sessions for industry feedback through to large public runs) and what kind of event (a major festival premiere, regional festivals, local venues).',prompt:'Is the project robust enough for large audience throughput, or a prototype for smaller bespoke viewings aimed at industry feedback?'},
+      {g:'aud',id:'aud',short:'Audience',text:'Who is the intended audience? Where are they?',kind:'text',ph:'For example: adults, families, young people aged 12–16, students and researchers, a particular community, festival and industry audiences, people new to XR. Say where they are, too.',kase:'Kinfolk Tech: partners chosen through community'},
       {g:'aud',id:'ess',short:'What’s essential',text:'What are the core conceptual elements of the project?',kind:'rank',items:{
         // Drawn from the IDFA 2025 report: the Key Questions on the mode of interaction, and the case studies (Jacie 2026-11-02). Provisional.
         solo:'A one-to-one encounter between each person and the work',social:'Audience members interacting with each other',objects:'Reaching for and handling objects in the virtual world',
         body:'Moving through a space, with the work responding to your presence',guide:'A live presenter or guide leading the audience',contrib:'Audiences adding something of their own to the work',site:'A connection to a particular place or community'}},
       {g:'aud',id:'success',short:'Success',text:'What does success look like for this particular project?',kind:'text',refl:true,prompt:'Is it audience numbers and ticket sales? Audience feedback? Press coverage? Behaviour change? Contribution to public discourse? Awards?'},
       {g:'show',id:'money',short:'Financial arrangements',text:'What financial arrangements would you consider for showing your work?',kind:'multi',opts:{fee:'Project or exhibition fees',travel:'Reimbursement of installation or travel costs',tickets:'Ticket sales',share:'Shared revenue',free:'Making the work freely available'},own:'Add another arrangement'},
+      {g:'show',id:'dur',short:'Preferred duration',text:'How long would you like your work to be available or exhibited?',kind:'choice',opts:{lt1:'Under a month',m13:'1–3 months',perm:'Permanent',always:'Always available'},other:true},
       {g:'show',id:'reversion',short:'Re-versioning',text:'Is the project suitable for re-versioning and how?',kind:'text',refl:true,prompt:'Can it be adapted to other formats? Can it scale? Would re-versioning increase audiences?'}]},
     {...SEC[1], groups:{find:'Find festivals',prep:'Prepare'}, qs:[
       {id:'pr_show',g:'find',short:'What to show',text:'What do you want to show at a festival?',kind:'multi',opts:{...FAM,...FLEX},fx:'fmt'},
@@ -1604,10 +1612,11 @@ if (jEl) {
   ];
   // An example project, so every screen has something to look at. "Start blank" clears it.
   const EXAMPLE={
-    p_fmt:{v:['nh'],o:'',n:''}, aud:{v:['adults','families','own1'],o:'',n:'Mid-sized European cities',add:{own1:'People who rarely visit galleries'},cn:1},
+    p_fmt:{v:['nh'],o:'',n:''}, aud:{v:[],o:'',n:'Adults and families in mid-sized European cities, including people who rarely visit galleries'},
     ess:{order:['social','site','body','own1','guide','contrib','solo','objects'],set:true,n:'',add:{own1:'Talking together afterwards'},cn:1},
     tech:{v:['comp','proj','audio','own1'],o:'',n:'Two projectors and a gaming PC; the host supplies screens',add:{own1:'A dimmable room'},cn:1},
-    welcome:{v:['inwork','guide'],o:'',n:''}, money:{v:['fee','travel'],o:'',n:''},
+    ready:{v:['wip'],o:'',n:''}, start:{v:[],o:'',n:'Spring 2027: small sessions for industry feedback at a regional festival first, then larger public runs at local venues'},
+    money:{v:['fee','travel'],o:'',n:''}, dur:{v:['m13'],o:'',n:''},
     success:{v:[],o:'',n:'People stay afterwards to talk about their own neighbourhood'},
     reversion:{v:[],o:'',n:'A smaller version without the set could tour to libraries'},
     pr_show:{v:['nh'],o:'',n:''}, pr_region:{v:['Europe'],o:'',n:''}, pr_when:{v:['q4'],o:'',n:''},
@@ -1818,7 +1827,7 @@ if (jEl) {
   const btns=(q,key,opts,kind)=>`<div class="ans" role="${kind==='multi'?'group':'radiogroup'}" aria-labelledby="q-t">${Object.entries(opts).map(([k,l])=>opt(q,key,k,l,kind)).join('')}${q.other&&key===q.id?opt(q,key,'other','Other',kind):''}</div>`;
   const note=(key,ph,cls)=>`<textarea class="sk-note${cls?' '+cls:''}" id="sk-note-${key}" data-skn="${key}" aria-label="${esc(ph)}" placeholder="${esc(ph)}">${esc(A(key).n)}</textarea>`;
   // Add your own items (Jacie 2026-11-02): What's essential, festival materials and the host checklist take as many as needed
-  const ownAdd=(key,ph)=>`<div class="rk-add"><input id="sk-add-${key}" data-ska="${key}" value="${esc((j.draft||{})[key]||'')}" placeholder="${esc(ph)}" aria-label="${esc(ph)}" autocomplete="off"><button class="sk-mini" data-sk="j-add" data-key="${key}">Add</button></div>`;
+  const ownAdd=(key,ph)=>`<div class="rk-add"><input id="sk-add-${key}" data-ska="${key}" value="${esc((j.draft||{})[key]||'')}" placeholder="${esc(ph)}" aria-label="${esc(ph)}" autocomplete="off"><button class="sk-mini rk-plus" data-sk="j-add" data-key="${key}" aria-label="Add" title="Add"><span aria-hidden="true">+</span></button></div>`;
   const ownX=(key,k,l)=>`<button class="own-x" data-sk="j-del" data-key="${key}" data-k="${k}" aria-label="Remove ${esc(l)}">×</button>`;
   // Every optional box folds closed by default (Jacie 2026-11-02); when it holds text, the closed line shows the start of it
   const noteFold=(key,label,ph,short)=>{ const k='note:'+key, t=A(key).n.trim();
